@@ -6,6 +6,21 @@ var readline = require('readline');
 
 var interval = parseInt(config.get("scanInterval")) * 60 * 60 * 1000;
 
+function examineCMD(cb) {
+	var examine = spawn('sudo', ["smartctl"]);
+	var isOk = true;
+	examine.stderr.on('data', function(data) {
+		console.log('smartctl err data: ' + data);
+		isOk = false;
+	});
+	examine.stdout.on('data', function(data) {
+		log += data;
+	});
+	examine.stdout.on('end', function() {
+		cb(isOk);
+	});
+}
+
 function getBlkList(cb) {
 	fs.readdir("/sys/block", function(err, ret) {
 		if (err) {
@@ -80,6 +95,13 @@ function fullDiag() {
 		}
 	});
 }
+
+examineCMD(function(ret) {
+	if (ret == false) {
+		console.error("Please install smartctl first");
+		process.exit();
+	}
+});
 
 fullDiag();
 
