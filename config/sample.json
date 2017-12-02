@@ -1,4 +1,7 @@
 {
+	"service": {
+		"port": false		// set to integer number to pre-define port number
+	},
 	"scanInterval": HOUR IN NUMBER,
 	"messaging": {
 		"pushbullet": {

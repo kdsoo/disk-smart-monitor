@@ -47,4 +47,11 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+var serviceMeta= setInterval(function() {
+	if (app.get("port") !== undefined) {
+		console.log("Service running on " + app.get("port"));
+		clearInterval(serviceMeta);
+	}
+}, 500);
+
 module.exports = app;
