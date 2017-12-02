@@ -10,5 +10,8 @@ In case of Debian/Ubuntu systems, install smartmontools package before you deplo
 smartctl works with root privilege. To meet that requirement, this project handles smartctl tool with "sudo".
 To make it work, add your id which launches this service on your system to sudoers file.
 Give sudo privilege for certain comamnd "smartctl" like follows:
-" /etc/sudoers
-" yourid ALL=(ALL) NOPASSWD: /usr/sbin/smartctl
+
+```
+/etc/sudoers
+yourid ALL=(ALL) NOPASSWD: /usr/sbin/smartctl
+```
