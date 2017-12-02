@@ -14,7 +14,6 @@ function examineCMD(cb) {
 		isOk = false;
 	});
 	examine.stdout.on('data', function(data) {
-		log += data;
 	});
 	examine.stdout.on('end', function() {
 		cb(isOk);
