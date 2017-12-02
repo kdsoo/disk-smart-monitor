@@ -1,0 +1,13 @@
+{
+	"scanInterval": 24,
+	"messaging": {
+		"pushbullet": {
+			"apikey": ""
+		},
+		"telegram": {
+			"name": "telegram user name to receive",
+			"apikey": "",
+			"admin": "your telegram chat_id to receive (ex: 10102313124)"
+		}
+	}
+}

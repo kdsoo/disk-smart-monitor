@@ -1,0 +1,9 @@
+node_modules/
+/config.js
+.DS_Store
+.project
+.settings/
+*.sw*
+Session.vim
+*.log
+default.json
