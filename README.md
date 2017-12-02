@@ -15,3 +15,9 @@ Give sudo privilege for certain comamnd "smartctl" like follows:
 /etc/sudoers
 yourid ALL=(ALL) NOPASSWD: /usr/sbin/smartctl
 ```
+# Launching this service
+This project is leveraging express.js. Which means you must have an exact port number under your control. check available port on your target system and configure like follows
+```
+export PORT=number
+```
+You can launch service by "npm start" or service daemonizer like pm2 is recommended for your good. (ex: pm2 start bin/www)
