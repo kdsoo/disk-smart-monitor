@@ -6,6 +6,8 @@ var readline = require('readline');
 
 var interval = parseInt(config.get("scanInterval")) * 60 * 60 * 1000;
 
+var smartstat = {};
+
 function examineCMD(cb) {
 	var examine = spawn('sudo', ["smartctl"]);
 	var isOk = true;
@@ -118,7 +120,9 @@ function fullDiag() {
 								emitServiceEvent("telegram", msg, true, function(ret) {
 									console.log(ret);
 								});
+								smartstat[disk] = "unhealthy";
 							} else {
+								smartstat[disk] = "healthy";
 								console.log(disk + " is ok");
 							}
 						}
@@ -157,6 +161,10 @@ serviceEvent.on("disks", function(msg) {
 			case "df":
 				dfCMD(function(err, ret) {
 					if (err) console.error(err);
+					var disks = Object.keys(ret);
+					for (var i = 0; i < disks.length; i++) {
+						ret[disks[i]].smart = smartstat[disks[i]];
+					}
 					res.res = ret;
 					serviceEvent.emit("disks-" + msg.requestID, res);
 				});
