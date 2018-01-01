@@ -60,6 +60,40 @@ function examineSMART(disk, cb) {
 	});
 }
 
+function dfCMD(cb) {
+	var df = spawn('df', ["-hT"]);
+	var rl = readline.createInterface({input: df.stdout});
+	var list = {};
+	df.stderr.on('data', function(data) {
+		//console.log(disk + ' smartctl err data: ' + data);
+	});
+	df.stdout.on('data', function(data) {
+		//console.log(disk + ' smartctl out data: ' + data);
+		//list += data;
+	});
+	rl.on('line', function(line) {
+		var lineArr = line.split(" ").filter(Boolean);
+		var dev = lineArr[0];
+		var fstype = lineArr[1];
+		var size = lineArr[2];
+		var used = lineArr[3];
+		var avail = lineArr[4];
+		var ratio = lineArr[5];
+		var mnt = lineArr[6];
+		if (fstype !== "tmpfs" && fstype !== "devtmpfs" && fstype !== "Type") {
+			//console.log(lineArr);
+			//console.log(dev.split(/(\d+)/).filter(Boolean));
+			var block = dev.split(/(\d+)/).filter(Boolean);
+			var disk = {dev: dev, fstype: fstype, size: size, used: used, avail: avail, ratio: ratio, mnt: mnt};
+			list[block[0]] = disk;
+		}
+	});
+	df.stdout.on('end', function() {
+		//console.log(disk + " SMART done");
+		cb(null, list);
+	});
+}
+
 function fullDiag() {
 	getBlkList(function(err, ret) {
 		if (err) {
@@ -102,8 +136,34 @@ examineCMD(function(ret) {
 	}
 });
 
+dfCMD(function(err, ret) {
+	if (err) console.error(err);
+	var keys = Object.keys(ret);
+	for (var i = 0; i < keys.length; i++) {
+		console.log(ret[keys[i]]);
+	}
+});
+
 fullDiag();
 
 setInterval(function() {
 	fullDiag();
 }, interval);
+
+serviceEvent.on("disks", function(msg) {
+	if (!msg.res && msg.cmd) {
+		var res = msg;
+		switch (msg.cmd) {
+			case "df":
+				dfCMD(function(err, ret) {
+					if (err) console.error(err);
+					res.res = ret;
+					serviceEvent.emit("disks-" + msg.requestID, res);
+				});
+				break;
+			default:
+				console.error("mdns serviceEvent: " + msg.cmd + " is not supported event command");
+			break;
+		}
+	}
+});
