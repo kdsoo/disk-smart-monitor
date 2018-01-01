@@ -1,8 +1,27 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+	//padding: 5px;
 }
 
 a {
-  color: #00B7FF;
+	color: #00B7FF;
+}
+
+img {
+	display: block;
+	//max-width: 50%;
+	height: auto;
+}
+
+.container {
+	background-color: #F7F8E0;
+}
+.controls {
+	//     margin: 0 auto -155px;
+}
+.footer {
+	//position: absolute;
+	bottom: 0;
+	width: 100%;
+	/* Set the fixed height of the footer here */
+	height: 200px;
 }
