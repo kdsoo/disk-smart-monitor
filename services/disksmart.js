@@ -87,7 +87,9 @@ function dfCMD(cb) {
 			//console.log(dev.split(/(\d+)/).filter(Boolean));
 			var block = dev.split(/(\d+)/).filter(Boolean);
 			var disk = {dev: dev, fstype: fstype, size: size, used: used, avail: avail, ratio: ratio, mnt: mnt};
-			list[block[0]] = disk;
+			if (list[block[0]] == undefined) list[block[0]] = {};
+			if (list[block[0]]["partitions"] == undefined) list[block[0]]["partitions"] = [];
+			list[block[0]]["partitions"].push(disk);
 		}
 	});
 	df.stdout.on('end', function() {
