@@ -55,7 +55,7 @@ function drawPartition(disk, part) {
 		addPartitionBadge("mount", partition, mnt);
 		addPartitionBadge("fstype", partition, fs);
 		addPartitionBadge("size", partition, size);
-		addPartitionBadge("avail", partition, avail);
+		addPartitionBadge("avail", partition, avail, "lightgreen");
 		addPartitionBadge("used", partition, used);
 		addPartitionBadge("ratio", partition, ratio, ratio);
 	}
@@ -63,11 +63,15 @@ function drawPartition(disk, part) {
 }
 
 function addPartitionBadge(name, part, content, color) {
-	color = parseInt(color);
 	var colorcode = "#E1FDE1";
-	if (color > 70) colorcode = "#FFCEBC";
-	if (color > 80) colorcode = "#FFB498";
-	if (color > 90) colorcode = "#FF4600";
+	if (!parseInt(color) && color !== undefined) {
+		colorcode = color;
+	} else {
+		color = parseInt(color);
+		if (parseInt(color) && color > 70) colorcode = "#FFCEBC";
+		if (parseInt(color) && color > 80) colorcode = "#FF8498";
+		if (parseInt(color) && color > 90) colorcode = "#FF4600";
+	}
 	var labeldiv = document.createElement("div");
 	var label = document.createElement("label");
 	label.style.backgroundColor = "#F8C471";
