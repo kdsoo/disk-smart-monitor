@@ -29,7 +29,8 @@ function getBlkList(cb) {
 		} else {
 			var list = [];
 			for (var i = 0; i < ret.length; i++) {
-				if ((ret[i].match(/loop/g) == null) && (ret[i].match(/ram/g) == null))
+				var realpath = fs.realpathSync("/sys/block/" + ret[i]);
+				if ((realpath.match(/loop/g) == null) && (realpath.match(/ram/g) == null) && (realpath.match(/virtual/g) == null))
 					list.push("/dev/" + ret[i]);
 			}
 			cb(null, list);
