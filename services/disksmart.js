@@ -30,6 +30,7 @@ function getBlkList(cb) {
 			var list = [];
 			for (var i = 0; i < ret.length; i++) {
 				var realpath = fs.realpathSync("/sys/block/" + ret[i]);
+				console.log(realpath, realpath.match(/loop/g), realpath.match(/ram/g), realpath.match(/virtual/g), realpath.match(/usb/g));
 				if ((realpath.match(/loop/g) == null) && (realpath.match(/ram/g) == null) && (realpath.match(/virtual/g) == null))
 					list.push("/dev/" + ret[i]);
 			}
@@ -44,21 +45,24 @@ function examineSMART(disk, cb) {
 	var passed = false;
 	var log = "";
 	examine.stderr.on('data', function(data) {
-		//console.log(disk + ' smartctl err data: ' + data);
+		//console.log("stderr: " + disk + ' smartctl err data: ' + data);
 	});
 	examine.stdout.on('data', function(data) {
-		//console.log(disk + ' smartctl out data: ' + data);
+		//console.log("stdout: " + disk + ' smartctl out data: ' + data);
 		log += data;
 	});
 	rl.on('line', function(line) {
 		var lineArr = line.split(" ").filter(Boolean);
-		//console.log(disk, lineArr);
+		//console.log("read line:", disk, lineArr);
+		if (lineArr.indexOf("USB") > -1) {
+			passed = true;
+		}
 		if (lineArr.indexOf("PASSED") > -1) {
 			passed = true;
 		}
 	});
 	examine.stdout.on('end', function() {
-		//console.log(disk + " SMART done");
+		//console.log("end:" + disk + " SMART done");
 		cb(null, passed, log);
 	});
 }
